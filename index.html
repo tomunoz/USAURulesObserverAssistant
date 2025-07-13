@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Frisbee Assistant</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            color: #005f73;
+        }
+        .tab-nav {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+        .tab-link {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1em;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-link.active {
+            font-weight: bold;
+            color: #005f73;
+            border-bottom-color: #005f73;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #qa-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #question-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        #ask-button {
+            padding: 12px 25px;
+            border: none;
+            background-color: #0077b6;
+            color: white;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #ask-button:disabled {
+            background-color: #a9a9a9;
+            cursor: not-allowed;
+        }
+        #response-area {
+            margin-top: 20px;
+            padding: 1px 20px 20px 20px;
+            background-color: #eef3f5;
+            border-left: 5px solid #0077b6;
+            border-radius: 4px;
+        }
+        .rule-item {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #cddde3;
+        }
+        .rule-item-header {
+            font-weight: bold;
+            color: #005f73;
+        }
+        .placeholder {
+            padding-top: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Ultimate Frisbee Assistant</h1>
+
+        <nav class="tab-nav">
+            <button class="tab-link active" onclick="openTab(event, 'Description')">Description</button>
+            <button class="tab-link" onclick="openTab(event, 'Rules')">Official Rules</button>
+            <button class="tab-link" onclick="openTab(event, 'Credits')">Credits</button>
+            <button class="tab-link" onclick="openTab(event, 'QnA')">Rules Q&A</button>
+        </nav>
+
+        <div id="Description" class="tab-content active">
+            <h2>Introduction</h2>
+            <p>The intent of this app is to provide a way for Ultimate Frisbee players to have a place to ask questions regarding specific calls made during a game and receive a response based on the rules.</p>
+            <p>The use case would be such that a call on the field is made by a player and the player from the other team "contests" the call. They eventually reach an agreement. After the game, someone could ask this assistant about this call and receive a response on the ruling based solely on the contents of the USAU Rule. Another use case is for learning about the rules by asking different questions and seeing the response to their scenario.</p>
+            <p>Like any use of AI, please exercise caution with the response and refer to the official USAU Rules.</p>
+            <h2>The Game of Ultimate</h2>
+            <p>Ultimate, originally known as Ultimate Frisbee, is a non-contact team sport played with a flying disc. The objective is to score points by passing the disc to a teammate in the opposing end zone, similar to American football. Players may not run with the disc.</p>
+            <p>A key element of Ultimate is the <strong>Spirit of the Game (SOTG)</strong>. This is the mindful behavior that is strived for by all players. It emphasizes sportsmanship and fair play. Because of SOTG, the sport is self-officiated, meaning players are responsible for making their own foul and line calls, even at the highest levels of competition.</p>
+        </div>
+
+        <div id="Rules" class="tab-content">
+            <h2>Official Rules of Ultimate</h2>
+            <p>For the complete and most up-to-date regulations, please refer to the official source from USA Ultimate.</p>
+            <a href="https://usaultimate.org/rules/" target="_blank" rel="noopener noreferrer">View the Official USA Ultimate Rules</a>
+        </div>
+
+        <div id="Credits" class="tab-content">
+            <h2>Application Credits</h2>
+            <p>This application was created by: <strong>Tom Muñoz</strong></p>
+            <p>"Vibe coding" with Google Gemini was employed in the creation of this app.</p>
+        </div>
+
+        <div id="QnA" class="tab-content">
+            <h2>Ask a Rules Question</h2>
+            <h6>The response is generated using AI. Be aware of potential inconsistensies for complicated questions. Refer to the USAU Rules (link in the Official Rules tab) for specifics on the rules.</h6>
+            <p>Enter a question about a specific rule, and the Gemini assistant will provide a summary and cite the relevant rules.</p>
+            <form id="qa-form" onsubmit="handleQuestion(event)">
+                <input type="text" id="question-input" placeholder="e.g., What is a pick?" required>
+                <button type="submit" id="ask-button">Ask Gemini</button>
+            </form>
+            <div id="response-area">
+                <p class="placeholder">Your summarized answer and cited rules will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(event, tabName) {
+            const tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            const tablinks = document.getElementsByClassName("tab-link");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+
+        // === UPDATED Q&A LOGIC ===
+        async function handleQuestion(event) {
+            event.preventDefault();
+            const questionInput = document.getElementById('question-input');
+            const askButton = document.getElementById('ask-button');
+            const responseArea = document.getElementById('response-area');
+            const question = questionInput.value;
+            if (!question) return;
+
+            askButton.disabled = true;
+            askButton.textContent = 'Searching...';
+            responseArea.innerHTML = '<p class="placeholder">Contacting Gemini for an answer...</p>';
+
+            try {
+                const backendUrl = 'http://127.0.0.1:5000/ask';
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question }),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.summary || `An unknown error occurred.`);
+                }
+                
+                // Build the new HTML response with the summary
+                let responseHTML = `<h3>Summary</h3><p>${data.summary}</p>`;
+
+                // Check if the applicable_rules array exists and has content
+                if (data.applicable_rules && data.applicable_rules.length > 0) {
+                    responseHTML += `<h3>Applicable Rules</h3>`;
+                    // Loop through each rule object and create HTML for it
+                    data.applicable_rules.forEach(ruleItem => {
+                        responseHTML += `
+                            <div class="rule-item">
+                                <p class="rule-item-header">${ruleItem.rule}</p>
+                                <p>${ruleItem.text}</p>
+                            </div>
+                        `;
+                    });
+                }
+                responseArea.innerHTML = responseHTML;
+
+            } catch (error) {
+                console.error('Error fetching answer:', error);
+                responseArea.innerHTML = `<p style="color: red;"><strong>Error:</strong> ${error.message}</p>`;
+            } finally {
+                askButton.disabled = false;
+                askButton.textContent = 'Ask Gemini';
+            }
+        }
+    </script>
+
+</body>
+</html>
