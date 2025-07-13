@@ -174,7 +174,7 @@
             responseArea.innerHTML = '<p class="placeholder">Contacting Gemini for an answer...</p>';
 
             try {
-                const backendUrl = 'http://127.0.0.1:5000/ask';
+                const backendUrl = 'https://usaurulesobserverassistant.onrender.com/ask';
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
